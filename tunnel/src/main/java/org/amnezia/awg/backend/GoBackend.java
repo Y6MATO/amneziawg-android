@@ -5,8 +5,13 @@
 
 package org.amnezia.awg.backend;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ServiceInfo;
 import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.system.OsConstants;
@@ -426,16 +431,29 @@ public final class GoBackend implements Backend {
             currentTunnel = tunnel;
             currentConfig = config;
 
-            service.protect(awgGetSocketV4(currentTunnelHandle));
-            service.protect(awgGetSocketV6(currentTunnelHandle));
+            final int v4Socket = awgGetSocketV4(currentTunnelHandle);
+            if (v4Socket >= 0) {
+                service.protect(v4Socket);
+            }
+            final int v6Socket = awgGetSocketV6(currentTunnelHandle);
+            if (v6Socket >= 0) {
+                service.protect(v6Socket);
+            }
 
             launchStatusJob();
+            service.startForegroundNotification();
         } else {
             if (currentTunnelHandle == -1) {
                 Log.w(TAG, "Tunnel already down");
                 return;
             }
             stopStatusJob();
+            try {
+                final VpnService activeService = vpnService.get(0, TimeUnit.NANOSECONDS);
+                if (activeService != null) {
+                    activeService.stopForegroundNotification();
+                }
+            } catch (final Exception ignored) { }
             int handleToClose = currentTunnelHandle;
             currentTunnel = null;
             currentTunnelHandle = -1;
@@ -490,10 +508,83 @@ public final class GoBackend implements Backend {
      * {@link android.net.VpnService} implementation for {@link GoBackend}
      */
     public static class VpnService extends android.net.VpnService {
+        private static final String NOTIFICATION_CHANNEL_ID = "zaza_vpn_channel";
+        private static final int NOTIFICATION_ID = 4242;
         @Nullable private GoBackend owner;
 
         public Builder getBuilder() {
             return new Builder();
+        }
+
+        public void startForegroundNotification() {
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    NotificationChannel channel = new NotificationChannel(
+                            NOTIFICATION_CHANNEL_ID,
+                            "Zaza VPN",
+                            NotificationManager.IMPORTANCE_LOW
+                    );
+                    channel.setDescription("Статус подключения VPN");
+                    channel.setShowBadge(false);
+                    NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    if (nm != null) {
+                        nm.createNotificationChannel(channel);
+                    }
+                }
+
+                Intent launchIntent = getPackageManager().getLaunchIntentForPackage(getPackageName());
+                PendingIntent pendingIntent = PendingIntent.getActivity(
+                        this,
+                        0,
+                        launchIntent != null ? launchIntent : new Intent(),
+                        PendingIntent.FLAG_UPDATE_CURRENT | (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? PendingIntent.FLAG_IMMUTABLE : 0)
+                );
+
+                int appIcon = getApplicationInfo().icon;
+                if (appIcon == 0) {
+                    appIcon = android.R.drawable.ic_dialog_info;
+                }
+
+                Notification.Builder builder;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    builder = new Notification.Builder(this, NOTIFICATION_CHANNEL_ID);
+                } else {
+                    builder = new Notification.Builder(this);
+                }
+                builder.setContentTitle("Zaza")
+                        .setContentText("Подключено")
+                        .setSmallIcon(appIcon)
+                        .setContentIntent(pendingIntent)
+                        .setOngoing(true);
+
+                if (Build.VERSION.SDK_INT >= 34) {
+                    startForeground(NOTIFICATION_ID, builder.build(), ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
+                } else {
+                    startForeground(NOTIFICATION_ID, builder.build());
+                }
+                Log.i(TAG, "Started foreground VPN notification");
+            } catch (Throwable t) {
+                Log.e(TAG, "Failed to start foreground notification", t);
+            }
+        }
+
+        public void stopForegroundNotification() {
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    stopForeground(STOP_FOREGROUND_REMOVE);
+                } else {
+                    stopForeground(true);
+                }
+                Log.i(TAG, "Stopped foreground VPN notification");
+            } catch (Throwable t) {
+                Log.e(TAG, "Failed to stop foreground notification", t);
+            }
+        }
+
+        @Override
+        public void onTaskRemoved(final Intent rootIntent) {
+            super.onTaskRemoved(rootIntent);
+            Log.d(TAG, "onTaskRemoved: Activity swiped away, keeping VPN service running in foreground");
         }
 
         @Override
@@ -504,6 +595,7 @@ public final class GoBackend implements Backend {
 
         @Override
         public void onDestroy() {
+            stopForegroundNotification();
             if (owner != null) {
                 final Tunnel tunnel = owner.currentTunnel;
                 if (tunnel != null) {
@@ -522,12 +614,13 @@ public final class GoBackend implements Backend {
         @Override
         public int onStartCommand(@Nullable final Intent intent, final int flags, final int startId) {
             vpnService.complete(this);
+            Log.d(TAG, "VpnService onStartCommand: flags=" + flags + " startId=" + startId + " intent=" + intent);
             if (intent == null || intent.getComponent() == null || !intent.getComponent().getPackageName().equals(getPackageName())) {
-                Log.d(TAG, "Service started by Always-on VPN feature");
+                Log.d(TAG, "Service started by Always-on VPN or system restart, restoring tunnel");
                 if (alwaysOnCallback != null)
                     alwaysOnCallback.alwaysOnTriggered();
             }
-            return super.onStartCommand(intent, flags, startId);
+            return START_STICKY;
         }
 
         public void setOwner(final GoBackend owner) {

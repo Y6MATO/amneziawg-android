@@ -1,0 +1,758 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/zaza_bg"
+    android:paddingStart="@dimen/zaza_screen_margin_horizontal"
+    android:paddingEnd="@dimen/zaza_screen_margin_horizontal"
+    android:fitsSystemWindows="true">
+
+    <!-- Screen 1: Home View (Landscape 2-Column Layout) -->
+    <LinearLayout
+        android:id="@+id/layout_home"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:paddingStart="24dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="76dp"
+        android:visibility="visible">
+
+        <!-- Left Column: Title Bar, Big Timer, Status -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:paddingStart="12dp"
+            android:paddingEnd="16dp">
+
+            <!-- Top Title Bar: "Zaza v2.0.0" -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="bottom"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/unbounded"
+                    app:fontFamily="@font/unbounded"
+                    android:text="Zaza"
+                    android:textColor="@color/zaza_text_primary"
+                    android:textSize="26sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_version"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginBottom="3dp"
+                    android:fontFamily="@font/unbounded"
+                    app:fontFamily="@font/unbounded"
+                    android:text="v2.0.0"
+                    android:textColor="@color/zaza_text_secondary"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <!-- Timer: "00:00:00" -->
+            <TextView
+                android:id="@+id/tv_timer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/unbounded"
+                app:fontFamily="@font/unbounded"
+                android:text="00:00:00"
+                android:textColor="@color/zaza_text_primary"
+                android:textSize="36sp"
+                android:textStyle="bold" />
+
+            <!-- Status: "Не подключено" -->
+            <TextView
+                android:id="@+id/tv_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:fontFamily="@font/unbounded"
+                app:fontFamily="@font/unbounded"
+                android:text="Не подключено"
+                android:textColor="@color/zaza_text_secondary"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <!-- Right Column: Big Power Button & Server Selection Card -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="12dp">
+
+            <!-- Big Power Button (Pill Capsule) -->
+            <FrameLayout
+                android:id="@+id/btn_power"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/zaza_power_btn_height"
+                android:background="@drawable/bg_power_button_disconnected"
+                android:clickable="true"
+                android:focusable="true"
+                android:nextFocusDown="@+id/btn_server_select">
+
+                <ImageView
+                    android:id="@+id/iv_power"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="Toggle VPN"
+                    android:src="@drawable/ic_power" />
+            </FrameLayout>
+
+            <!-- Server Selection Card: right below the power button -->
+            <LinearLayout
+                android:id="@+id/btn_server_select"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginStart="14dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="14dp"
+                android:background="@drawable/bg_server_card"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="22dp"
+                android:paddingEnd="18dp"
+                android:nextFocusUp="@+id/btn_power"
+                android:nextFocusDown="@+id/btn_nav_home">
+
+                <TextView
+                    android:id="@+id/tv_server_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/unbounded"
+                    app:fontFamily="@font/unbounded"
+                    android:maxLines="1"
+                    android:text="Сервер #6"
+                    android:textColor="@color/zaza_text_primary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/iv_server_chevron"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:contentDescription="Select Server"
+                    android:src="@drawable/ic_chevron_right" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Screen 2: Settings View -->
+    <ScrollView
+        android:id="@+id/layout_settings"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="24dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="24dp"
+            android:paddingBottom="90dp">
+
+            <!-- Title: "Настройки" -->
+            <TextView
+                android:id="@+id/tv_settings_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/unbounded"
+                app:fontFamily="@font/unbounded"
+                android:text="Настройки"
+                android:textColor="@color/zaza_text_primary"
+                android:textSize="26sp"
+                android:textStyle="bold" />
+
+            <!-- Item 1: Внешний вид -->
+            <LinearLayout
+                android:id="@+id/item_appearance"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/bg_settings_card"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="20dp"
+                android:paddingEnd="18dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="Внешний вид"
+                    android:src="@drawable/ic_palette" />
+
+                <TextView
+                    android:id="@+id/tv_item_appearance"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/unbounded"
+                    app:fontFamily="@font/unbounded"
+                    android:text="Внешний вид"
+                    android:textColor="@color/zaza_text_primary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:contentDescription="Arrow"
+                    android:src="@drawable/ic_chevron_right" />
+            </LinearLayout>
+
+            <!-- Item 2: Комфорт -->
+            <LinearLayout
+                android:id="@+id/item_comfort"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/bg_settings_card"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="20dp"
+                android:paddingEnd="18dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="Комфорт"
+                    android:src="@drawable/ic_dashboard" />
+
+                <TextView
+                    android:id="@+id/tv_item_comfort"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/unbounded"
+                    app:fontFamily="@font/unbounded"
+                    android:text="Комфорт"
+                    android:textColor="@color/zaza_text_primary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:contentDescription="Arrow"
+                    android:src="@drawable/ic_chevron_right" />
+            </LinearLayout>
+
+            <!-- Item 3: Исключения -->
+            <LinearLayout
+                android:id="@+id/item_exceptions"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/bg_settings_card"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="20dp"
+                android:paddingEnd="18dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="Исключения"
+                    android:src="@drawable/ic_call_split" />
+
+                <TextView
+                    android:id="@+id/tv_item_exceptions"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/unbounded"
+                    app:fontFamily="@font/unbounded"
+                    android:text="Исключения"
+                    android:textColor="@color/zaza_text_primary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:contentDescription="Arrow"
+                    android:src="@drawable/ic_chevron_right" />
+            </LinearLayout>
+
+            <!-- Item 4: Точка Доступа с VPN -->
+            <LinearLayout
+                android:id="@+id/item_hotspot"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/bg_settings_card"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="20dp"
+                android:paddingEnd="18dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="Точка Доступа с VPN"
+                    android:src="@drawable/ic_wifi_tethering" />
+
+                <TextView
+                    android:id="@+id/tv_item_hotspot"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/unbounded"
+                    app:fontFamily="@font/unbounded"
+                    android:text="Точка Доступа с VPN"
+                    android:textColor="@color/zaza_text_primary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:contentDescription="Arrow"
+                    android:src="@drawable/ic_chevron_right" />
+            </LinearLayout>
+
+            <!-- Item 5: О Zaza -->
+            <LinearLayout
+                android:id="@+id/item_about"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/bg_settings_card"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="20dp"
+                android:paddingEnd="18dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="О Zaza"
+                    android:src="@drawable/ic_info_circle" />
+
+                <TextView
+                    android:id="@+id/tv_item_about"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/unbounded"
+                    app:fontFamily="@font/unbounded"
+                    android:text="О Zaza"
+                    android:textColor="@color/zaza_text_primary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:contentDescription="Arrow"
+                    android:src="@drawable/ic_chevron_right" />
+            </LinearLayout>
+
+            <!-- Settings Footer Version: "Zaza v2.0.0" -->
+            <TextView
+                android:id="@+id/tv_settings_footer_version"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/unbounded"
+                app:fontFamily="@font/unbounded"
+                android:gravity="center"
+                android:text="Zaza v2.0.0"
+                android:textColor="@color/zaza_text_dim"
+                android:textSize="13sp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Screen 3: About View (Wrapped in ScrollView for landscape) -->
+    <ScrollView
+        android:id="@+id/layout_about"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="24dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="24dp"
+            android:paddingBottom="90dp">
+
+            <!-- Top Header: Back Arrow + Title "О Zaza" -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:layout_marginBottom="12dp">
+
+                <FrameLayout
+                    android:id="@+id/btn_about_back"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackgroundBorderless">
+
+                    <ImageView
+                        android:id="@+id/iv_about_back"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="Назад"
+                        android:src="@drawable/ic_arrow_back"
+                        app:tint="@color/zaza_text_primary" />
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/tv_about_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="@font/unbounded"
+                    app:fontFamily="@font/unbounded"
+                    android:text="О Zaza"
+                    android:textColor="@color/zaza_text_primary"
+                    android:textSize="26sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Button 1: Проверить обновления -->
+            <LinearLayout
+                android:id="@+id/btn_check_updates"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/bg_settings_card"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="20dp"
+                android:paddingEnd="18dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="Проверить обновления"
+                    android:src="@drawable/ic_check_updates" />
+
+                <TextView
+                    android:id="@+id/tv_btn_check_updates"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/unbounded"
+                    app:fontFamily="@font/unbounded"
+                    android:text="Проверить обновления"
+                    android:textColor="@color/zaza_text_primary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Button 2: Версия приложения -->
+            <LinearLayout
+                android:id="@+id/btn_app_version"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/bg_settings_card"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="20dp"
+                android:paddingEnd="18dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="Версия приложения"
+                    android:src="@drawable/ic_info_circle" />
+
+                <TextView
+                    android:id="@+id/tv_app_version"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/unbounded"
+                    app:fontFamily="@font/unbounded"
+                    android:text="Версия приложения: v2.0.0"
+                    android:textColor="@color/zaza_text_primary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Button 3: Telegram -->
+            <LinearLayout
+                android:id="@+id/btn_telegram"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_settings_card"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="20dp"
+                android:paddingEnd="18dp">
+
+                <ImageView
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:contentDescription="Telegram"
+                    android:src="@drawable/ic_telegram" />
+
+                <TextView
+                    android:id="@+id/tv_btn_telegram"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/unbounded"
+                    app:fontFamily="@font/unbounded"
+                    android:text="Telegram"
+                    android:textColor="@color/zaza_text_primary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Screen 4: Server Selection View -->
+    <LinearLayout
+        android:id="@+id/layout_server_select"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/zaza_bg"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <!-- Top Title Bar: "<- Выберите сервер" -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="20dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="8dp">
+
+            <FrameLayout
+                android:id="@+id/btn_server_select_back"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="Back"
+                    android:src="@drawable/ic_arrow_back"
+                    app:tint="@color/zaza_text_primary" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/tv_server_select_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:fontFamily="@font/unbounded"
+                app:fontFamily="@font/unbounded"
+                android:text="Выберите сервер"
+                android:textColor="@color/zaza_text_primary"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Segmented Tab Switcher ("Обычные" / "Специальные") -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/bg_tab_container"
+            android:orientation="horizontal"
+            android:padding="4dp">
+
+            <!-- Tab 1: Обычные -->
+            <FrameLayout
+                android:id="@+id/tab_regular"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/bg_tab_pill_active"
+                android:clickable="true"
+                android:focusable="true">
+
+                <TextView
+                    android:id="@+id/tv_tab_regular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/unbounded"
+                    app:fontFamily="@font/unbounded"
+                    android:text="Обычные"
+                    android:textColor="@color/zaza_purple"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+            </FrameLayout>
+
+            <!-- Tab 2: Специальные -->
+            <FrameLayout
+                android:id="@+id/tab_special"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@null"
+                android:clickable="true"
+                android:focusable="true">
+
+                <TextView
+                    android:id="@+id/tv_tab_special"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/unbounded"
+                    app:fontFamily="@font/unbounded"
+                    android:text="Специальные"
+                    android:textColor="@color/zaza_tab_inactive_text"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <!-- Server List -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_servers_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:overScrollMode="never"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="24dp" />
+
+    </LinearLayout>
+
+    <!-- Floating Bottom Navigation Bar (Centered Stadium Capsule) -->
+    <FrameLayout
+        android:id="@+id/bottom_nav_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/bg_bottom_nav"
+        android:elevation="8dp"
+        android:padding="6dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <!-- Home Tab Button -->
+            <FrameLayout
+                android:id="@+id/btn_nav_home"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/bg_nav_tab_active"
+                android:clickable="true"
+                android:focusable="true"
+                android:nextFocusRight="@+id/btn_nav_settings"
+                android:nextFocusUp="@+id/btn_server_select">
+
+                <ImageView
+                    android:id="@+id/iv_nav_home"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="Главная"
+                    android:src="@drawable/ic_nav_home"
+                    android:tint="@color/zaza_text_primary" />
+            </FrameLayout>
+
+            <!-- Settings Tab Button -->
+            <FrameLayout
+                android:id="@+id/btn_nav_settings"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="6dp"
+                android:background="@null"
+                android:clickable="true"
+                android:focusable="true"
+                android:nextFocusLeft="@+id/btn_nav_home"
+                android:nextFocusUp="@+id/btn_server_select">
+
+                <ImageView
+                    android:id="@+id/iv_nav_settings"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="Настройки"
+                    android:src="@drawable/ic_nav_settings"
+                    android:tint="@color/zaza_nav_inactive" />
+            </FrameLayout>
+
+        </LinearLayout>
+    </FrameLayout>
+
+</FrameLayout>

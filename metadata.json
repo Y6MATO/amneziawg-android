@@ -1,0 +1,6 @@
+{
+  "name": "Zaza",
+  "description": "Zaza client for Android, managing VPN tunnels and secure connections",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -3,6 +3,8 @@ package org.amnezia.awg;
 import androidx.annotation.Nullable;
 
 public class GoBackend {
+    public static boolean sNativeLoaded = false;
+
     @Nullable
     public static native String awgGetConfig(int handle);
 
@@ -16,3 +18,4 @@ public class GoBackend {
 
     public static native String awgVersion();
 }
+

@@ -68,6 +68,7 @@ public final class SharedLibraryLoader {
         Throwable noAbiException;
         try {
             System.loadLibrary(libName);
+            org.amnezia.awg.GoBackend.sNativeLoaded = true;
             return;
         } catch (final UnsatisfiedLinkError e) {
             Log.d(TAG, "Failed to load library normally, so attempting to extract from apk", e);
@@ -78,6 +79,7 @@ public final class SharedLibraryLoader {
             f = File.createTempFile("lib", ".so", context.getCodeCacheDir());
             if (extractLibrary(context, libName, f)) {
                 System.load(f.getAbsolutePath());
+                org.amnezia.awg.GoBackend.sNativeLoaded = true;
                 return;
             }
         } catch (final Exception e) {
@@ -88,8 +90,7 @@ public final class SharedLibraryLoader {
                 // noinspection ResultOfMethodCallIgnored
                 f.delete();
         }
-        if (noAbiException instanceof RuntimeException)
-            throw (RuntimeException) noAbiException;
-        throw new RuntimeException(noAbiException);
+        Log.w(TAG, "Native library " + libName + " not loaded; using in-memory stub backend.");
+        org.amnezia.awg.GoBackend.sNativeLoaded = false;
     }
 }

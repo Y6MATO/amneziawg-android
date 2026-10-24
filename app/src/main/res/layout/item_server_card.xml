@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_server"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:background="@drawable/bg_server_card_normal"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center_vertical"
+    android:minHeight="56dp"
+    android:orientation="horizontal"
+    android:paddingStart="16dp"
+    android:paddingTop="10dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="10dp">
+
+    <!-- Left Icon (Globe or Sparkles) -->
+    <ImageView
+        android:id="@+id/iv_server_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:contentDescription="Server icon"
+        android:src="@drawable/ic_globe"
+        app:tint="@color/zaza_text_secondary" />
+
+    <!-- Server Title and Subtitle -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="14dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_server_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="@font/unbounded"
+            android:maxLines="1"
+            android:text="Сервер #8"
+            android:textColor="@color/zaza_text_primary"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_server_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/unbounded"
+            android:maxLines="1"
+            android:text="Ограниченная низкая скорость"
+            android:textColor="@color/zaza_tab_inactive_text"
+            android:textSize="11sp"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <!-- Pinned Indicator (Pushpin) -->
+    <ImageView
+        android:id="@+id/iv_server_pin"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginEnd="10dp"
+        android:contentDescription="Pinned"
+        android:src="@drawable/ic_pin"
+        android:visibility="gone"
+        app:tint="@color/zaza_purple" />
+
+    <!-- Info Button (?) -->
+    <FrameLayout
+        android:id="@+id/btn_server_info"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_gravity="center"
+            android:contentDescription="Server information"
+            android:src="@drawable/ic_info_circle"
+            app:tint="@color/zaza_text_secondary" />
+    </FrameLayout>
+
+    <!-- Active Selection Checkmark (✓) -->
+    <ImageView
+        android:id="@+id/iv_server_check"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="8dp"
+        android:contentDescription="Selected"
+        android:src="@drawable/ic_check"
+        android:visibility="gone"
+        app:tint="@color/zaza_purple" />
+
+</LinearLayout>

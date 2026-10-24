@@ -21,10 +21,10 @@ plugins {
     id("com.android.settings") version "8.13.0"
 }
 
-rootProject.name = "amneziawg-android"
+rootProject.name = "Zaza"
 
 include(":tunnel")
-include(":ui")
+include(":app")
 
 configure<SettingsExtension> {
     buildToolsVersion = "36.0.0"
